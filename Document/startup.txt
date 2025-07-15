@@ -1,0 +1,32 @@
+手順
+1.Project ManagerからToolchain/IDEをMakefileに変更->Generate Code
+２.launch.jsonを開く
+3.armToolchainPathにGCC_ARM_Toolchainのbinを指定する。（パスを通せばArmToolchainの設定必要なし。(task.jsonのGCC_PATHは設定必要)→やはり必要）
+4.serverpathにOpenOCDのopenocd.exeを指定。
+5．executableが（プロジェクト名）.elfになっているか確認
+6.tasks.jsonを開く
+7.Build Debug->argsのGCC_PATHにGCC_ARM_Toolchainのbinを指定する。
+8.Flash programのflash_elfがプロジェクト名になっているか確認
+9.c_cpp_propertiesのincludepathにプロジェクトのIncフォルダを設定
+
+
+
+＝＝＝トラブルシューティング＝＝＝
+ヘッダが読み込めない
+VScodeのC/C＋＋（拡張機能）の設定でインクルードパスを設定する。
+Incフォルダを設定
+
+.buildファイルがない
+デバッグすれば生成される。
+
+make: *** No rule to make target `run'. Stop.
+STM３２Cube->Project Managerでmakefileを選択した後Generate Codeを行っていない。
+
+Error: libusb_open() failed with LIBUSB_ERROR_NOT_SUPPORTED
+ボードの接続がCOMポートとして認識されている。Zadigを用いてUSBポートとして認識させる。
+https://qiita.com/infinite1oop/items/4015cb05f4a1e164f472
+
+GENERATE CODEをしたのにコードが更新されない。
+フォルダを閉じて再度開くと変更が反映される。
+
+

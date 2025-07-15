@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch on target",
+      "cwd": "${workspaceRoot}",
+      "executable": "./build-debug/app.elf",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "configFiles": [
+        "interface/stlink-v2-1.cfg",
+        "target/stm32f3x.cfg"
+      ],
+      "preLaunchTask": "Build debug for target",
+      "postLaunchCommands": [
+        "monitor arm semihosting enable"
+      ],
+
+    },
+    {
+      "name": "Launch unit test",
+      "type": "lldb",
+      "request": "launch",
+      "args": [
+        "-v"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "program": "${workspaceFolder}/build-unit-test/app",
+      "osx": {
+        "MIMode": "lldb",
+        "program": "${workspaceFolder}/build-unit-test/app"
+      },
+      "windows": {
+        "MIMode": "lldb",
+        "program": "${workspaceFolder}/build-unit-test/app"
+      },
+      "preLaunchTask": "Build unit test for host"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/rsvol.22/Desktop/github/nucleo-impedance-analyzer/Src-shared",
+      "program": "/Users/rsvol.22/Desktop/github/nucleo-impedance-analyzer/Src-shared/build/Debug/outDebug"
+    }
+  ]
+}
