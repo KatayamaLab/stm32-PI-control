@@ -12,6 +12,7 @@
 #define MAX_ANALOG 3300.0
 #define COUNT_TO_ANALOG(count) (count * MAX_ANALOG / MAX_COUNT)
 #define ANALOG_TO_COUNT(analog) (analog * MAX_COUNT / MAX_ANALOG)
+#define TARGET_ADC_VALUE 2048.0
 
 class Mmt
 {

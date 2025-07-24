@@ -690,8 +690,8 @@ void Mmt::CALIBRATE_CURRENT()
 
     STATE_makeNum(&state, 0, sizeof(uint32_t));
     STATE_makeNum(&state, 1, sizeof(uint32_t));
-    STATE_makeNum(&state, 2, sizeof(uint16_t));
-    STATE_makeNum(&state, 3, sizeof(uint16_t));
+    STATE_makeNum(&state, 2, sizeof(float));
+    STATE_makeNum(&state, 3, sizeof(float));
 
     if (STATE_hasError(&state))
     {
@@ -718,9 +718,8 @@ void Mmt::CALIBRATE_CURRENT()
     uint32_t timestep = (uint32_t)params[1];
 
     // 次のタイムステップまで待機
-    if (now - timestep > *intervalStart)
+    if (now - *intervalStart >= timestep)
     {
-
       STATE_incrementSeqCtr(&state);
 
       // Reset data buffer
@@ -764,10 +763,15 @@ void Mmt::CALIBRATE_CURRENT()
     float *prevError = (float *)STATE_getNum(&state, 3);
 
     // 電流の偏差
-    float error = 0 - current;
+    float error = TARGET_ADC_VALUE - current; // 1.65 Vのオフセットからの差
 
     // 電流のオフセットの計算
+    // 浮動小数展と16ビットの符号なし整数型をキャスト
     float nextDacCount = *prevDacCount + Kp * (error - *prevError) + Ki * (interval / 1000.0) * error;
+    
+    // DACの最大値が4095 (12bit) の場合を想定した飽和処理
+    if (nextDacCount < 0.0f) nextDacCount = 0.0f;
+    if (nextDacCount > 4095.0f) nextDacCount = 4095.0f; // PWMの最大DAC値に合わせて調整
 
     float pwmConfigParams[4] = {params[3], nextDacCount, params[5], params[6]};
     Mmt::setPWMWaveConfig(pwmConfigParams, 4);
@@ -778,7 +782,7 @@ void Mmt::CALIBRATE_CURRENT()
 
     // ############################################################
 
-    *currentIteration++;
+    (*currentIteration)++;
 
     if (*currentIteration >= iterationNum)
     {
@@ -982,7 +986,7 @@ void Mmt::setPWMLoad(float *params, int paramNum)
 
 void Mmt::setKpKi(float *params, int paramNum)
 {
-  if (paramNum != 1)
+  if (paramNum != 2)
   {
     STATE_setError(&state, INVALID_PARAMETER_NUM);
     return;

@@ -204,6 +204,12 @@ void App::PROCESS_COMMAND()
     return;
   }
 
+  if (strcmp(command, "setpi") == 0)
+  {
+    Mmt::setKpKi(params, paramNum);
+    return;
+  }
+
   STATE_setError(&state, COMMAND_NOT_FOUND);
 
   // 直前のコマンドが終了するまで新たな状態遷移コマンドを受け付けない
